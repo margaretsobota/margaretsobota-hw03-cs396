@@ -9,7 +9,7 @@ body {
     line-height: 1.4em;
     grid-template-columns: 240px auto;
     grid-template-rows: 70px auto;
-    grid-template-areas: 
+    grid-template-areas:
         "top top"
         "left main";
 }
@@ -46,6 +46,21 @@ main {
 }
 #companions {
     flex: 1 1 45%;
+}
+
+.companion-el {
+  display: flex;
+  flex-direction: row;
+  height: 100px;
+  padding: 10px;
+  border: .2px solid grey;
+  margin: 10px;
+}
+
+.companion-img {
+  width: 15%;
+  height: 100%;
+  margin-right: 10px;
 }
 
 
@@ -103,5 +118,5 @@ main {
     }
     main {
         flex-direction: column;
-    }  
+    }
 }
