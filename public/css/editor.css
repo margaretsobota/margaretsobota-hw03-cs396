@@ -74,26 +74,28 @@ main {
   padding-right: 10px;
 }
 
-#create-doctor-button {
+#create {
   align-self: center;
 }
 
 #error-message {
-  color: red;
   display: none;
 }
 
 input:invalid {
-  background-color: pink;
+  background-color: rgba(161, 51, 51, 0.342);
 }
 
 #doctor-detail-heading {
   display: flex;
   flex-direction: row;
   overflow: hidden;
+  justify-content: space-between;
 }
 
-#edit {
+#edit, #delete {
+  width: 100px;
+  height: 50px;
 }
 
 

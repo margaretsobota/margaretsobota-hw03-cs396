@@ -11,6 +11,8 @@ const initResetButton = () => {
     };
 };
 
+var selectedDoctor = "";
+
 const getDoctors = async () => {
   try {
     const response = await fetch('http://localhost:8081/doctors',  {
@@ -18,6 +20,7 @@ const getDoctors = async () => {
     });
     if (response.ok) {
         const data = await response.json();
+        document.querySelector("#doctors-section").innerHTML = "";
         data.forEach(doctor => {
           document.querySelector("#doctors-section").innerHTML += `
             <li>
@@ -42,18 +45,7 @@ const getDoctor = async (id) => {
     });
     if (response.ok) {
         const data = await response.json();
-        document.querySelector("#doctor").innerHTML = `
-        <div id="doctor-detail-heading" >
-          <h1>
-            ${data.name}
-          </h1>
-          <button class="btn" id="edit"> Edit </button>
-        </div>
-        <h3>
-          Seasons: ${data.seasons}
-        </h3>
-        <img src=${data.image_url} />
-        `;
+        renderDoctor(data);
     } else {
         console.log('Bad request');
     };
@@ -61,6 +53,22 @@ const getDoctor = async (id) => {
     console.log(err);
   }
 }
+
+const deleteDoctor = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:8081/doctors/${id}`,  {
+        method: 'DELETE'
+    });
+    if (response.ok) {
+        console.log("deleted");
+    } else {
+        console.log('Bad request');
+    };
+  } catch(err) {
+    console.log(err);
+  }
+}
+
 
 const getDoctorCompanions = async (id) => {
   try {
@@ -101,15 +109,7 @@ const createDoctor = async (body) => {
     if (response.ok) {
         document.querySelector("#error-message").style.display = "none";
         const data = await response.json();
-        document.querySelector("#doctor").innerHTML = `
-        <h1>
-          ${data.name}
-        </h1>
-        <h3>
-          Seasons: ${data.seasons}
-        </h3>
-        <img src=${data.image_url} />
-        `;
+        renderDoctor(data);
         document.querySelector("#doctors-section").innerHTML += `
           <li>
             <button class="doctor-button" id=${data._id} onclick="handleDoctorSelect(event)">
@@ -127,13 +127,34 @@ const createDoctor = async (body) => {
   }
 }
 
+const renderDoctor = (data) => {
+  document.querySelector("#doctor").innerHTML = `
+    <div id="doctor-detail-heading" >
+      <h1>
+        ${data.name}
+      </h1>
+      <div>
+        <button class="btn" id="edit"> Edit </button>
+        <button class="btn" id="delete" onclick="handleDelete(event)">
+          Delete
+        </button>
+      </div>
+    </div>
+    <h3>
+      Seasons: ${data.seasons}
+    </h3>
+    <img src=${data.image_url} />
+  `;
+  selectedDoctor = data;
+}
+
 const handleDoctorSelect = (ev) => {
   const id = ev.target.id;
   getDoctor(id);
   getDoctorCompanions(id);
 }
 
-document.querySelector("#create-doctor-button").onclick = () => {
+document.querySelector("#create").onclick = () => {
   document.querySelector("#doctor-form").style.display = "block";
 }
 
@@ -141,7 +162,7 @@ document.querySelector("#cancel").onclick = () => {
   document.querySelector("#doctor-form").style.display = "none";
 }
 
-document.querySelector("#create").onclick = () => {
+document.querySelector("#save-create").onclick = () => {
   const name = document.querySelector("#name").value;
   const seasons = document.querySelector("#seasons").value.split(",");
   const ordering = document.querySelector("#ordering").value;
@@ -153,6 +174,16 @@ document.querySelector("#create").onclick = () => {
     image_url
   };
   createDoctor(data);
+}
+
+const handleDelete = (event) => {
+  console.log("hi");
+  console.log(selectedDoctor);
+  if (confirm(`Are you sure you want to delete ${selectedDoctor.name}?`))
+  {
+    deleteDoctor(selectedDoctor._id);
+    getDoctors();
+  }
 }
 
 getDoctors();
