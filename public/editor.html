@@ -14,12 +14,45 @@
 
             <!-- List of doctors goes here -->
           </ul>
+          <button class="btn btn-main" id="create-doctor-button">
+            Create Doctor
+          </button>
         </aside>
         <main>
+          <section id="doctor-form">
+            <form id="create-doctor">
+              <div class="create-doctor-fields">
+                <!-- Name -->
+                <label for="name">Name</label>
+                <input type="text" id="name" required>
 
-            <section id="doctor">
+                <!-- Seasons -->
+                <label for="seasons">Seasons</label>
+                <input type="text" id="seasons" required>
+
+                <!-- Ordering -->
+                <label for="ordering">Ordering</label>
+                <input type="text" id="ordering">
+
+                <!-- Image -->
+                <label for="image_url">Image</label>
+                <input type="text" id="image_url">
+              </div>
+            </form>
+
+                <!-- Buttons -->
+              <button class="btn btn-main" id="create">
+                Save
+              </button>
+              <button class="btn" id="cancel">Cancel</button>
+              <h2 id="error-message">
+                Error. Please fix the data.
+              </h2>
+
+          </section>
+          <section id="doctor">
                 <!-- Selected doctor goes here -->
-            </section>
+          </section>
 
             <section id="companions">
               <ul id="companions-list">

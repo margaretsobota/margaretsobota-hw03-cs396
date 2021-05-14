@@ -63,6 +63,39 @@ main {
   margin-right: 10px;
 }
 
+.create-doctor-fields {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
+}
+
+#doctor-form {
+  display: none;
+  padding-right: 10px;
+}
+
+#create-doctor-button {
+  align-self: center;
+}
+
+#error-message {
+  color: red;
+  display: none;
+}
+
+input:invalid {
+  background-color: pink;
+}
+
+#doctor-detail-heading {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+#edit {
+}
+
 
 .error {
     display: none;

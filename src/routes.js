@@ -53,6 +53,7 @@ router.route("/doctors")
         try {
           if (!req.body.name || !req.body.seasons) {
             res.status(500).send({message: "Oops... bad data!"});
+            console.log("bad!", req.body);
             return;
           }
           const newDoctor = req.body;

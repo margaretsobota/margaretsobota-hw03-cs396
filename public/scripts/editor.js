@@ -43,9 +43,12 @@ const getDoctor = async (id) => {
     if (response.ok) {
         const data = await response.json();
         document.querySelector("#doctor").innerHTML = `
-        <h1>
-          ${data.name}
-        </h1>
+        <div id="doctor-detail-heading" >
+          <h1>
+            ${data.name}
+          </h1>
+          <button class="btn" id="edit"> Edit </button>
+        </div>
         <h3>
           Seasons: ${data.seasons}
         </h3>
@@ -86,12 +89,70 @@ const getDoctorCompanions = async (id) => {
   }
 }
 
+const createDoctor = async (body) => {
+  try {
+    const response = await fetch(`http://localhost:8081/doctors`,  {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    });
+    if (response.ok) {
+        document.querySelector("#error-message").style.display = "none";
+        const data = await response.json();
+        document.querySelector("#doctor").innerHTML = `
+        <h1>
+          ${data.name}
+        </h1>
+        <h3>
+          Seasons: ${data.seasons}
+        </h3>
+        <img src=${data.image_url} />
+        `;
+        document.querySelector("#doctors-section").innerHTML += `
+          <li>
+            <button class="doctor-button" id=${data._id} onclick="handleDoctorSelect(event)">
+              ${data.name}
+            </button>
+          </li>
+        `;
+
+    } else {
+        document.querySelector("#error-message").style.display = "block";
+        console.log('Bad request', response);
+    };
+  } catch(err) {
+    console.log(err);
+  }
+}
+
 const handleDoctorSelect = (ev) => {
-  console.log("hi", ev.target);
   const id = ev.target.id;
   getDoctor(id);
   getDoctorCompanions(id);
-  console.log(id);
+}
+
+document.querySelector("#create-doctor-button").onclick = () => {
+  document.querySelector("#doctor-form").style.display = "block";
+}
+
+document.querySelector("#cancel").onclick = () => {
+  document.querySelector("#doctor-form").style.display = "none";
+}
+
+document.querySelector("#create").onclick = () => {
+  const name = document.querySelector("#name").value;
+  const seasons = document.querySelector("#seasons").value.split(",");
+  const ordering = document.querySelector("#ordering").value;
+  const image_url = document.querySelector("#image_url").value;
+  const data = {
+    name,
+    seasons,
+    ordering,
+    image_url
+  };
+  createDoctor(data);
 }
 
 getDoctors();
