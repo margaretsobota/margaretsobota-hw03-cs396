@@ -12,6 +12,7 @@ const initResetButton = () => {
 };
 
 var selectedDoctor = "";
+var numDoctors = 0;
 
 const getDoctors = async () => {
   try {
@@ -30,6 +31,7 @@ const getDoctors = async () => {
             </li>
           `;
         });
+        numDoctors = data.length;
     } else {
         console.log('Bad request');
     };
@@ -192,7 +194,7 @@ document.querySelector("#create").onclick = () => {
         <label for="seasons">Seasons</label>
         <input type="text" id="seasons" required>
         <label for="ordering">Ordering</label>
-        <input type="text" id="ordering">
+        <input type="text" id="ordering" value=${numDoctors}>
         <label for="image_url">Image</label>
         <input type="text" id="image_url">
       </div>
@@ -218,8 +220,21 @@ const handleCancelEdit = () => {
 }
 
 const handleSaveCreate = () => {
+    const error = document.querySelector("#error-message");
     const name = document.querySelector("#name").value;
+    if (name.length === 0) {
+      error.innerHTML = "The doctor's name is a required field.";
+      error.style.display = "block";
+      return;
+    }
     const seasons = document.querySelector("#seasons").value.split(",");
+    for (season of seasons) {
+      if (season === "" || !parseInt(season)){
+        error.innerHTML = "Please make sure the seasons are integers.";
+        error.style.display = "block";
+        return;
+      }
+    }
     const ordering = document.querySelector("#ordering").value;
     const image_url = document.querySelector("#image_url").value;
     const data = {
@@ -232,8 +247,22 @@ const handleSaveCreate = () => {
 }
 
 const handleSaveEdit = () => {
+    const error = document.querySelector("#error-message");
     const name = document.querySelector("#name").value;
+    if (name.length === 0) {
+      error.innerHTML = "The doctor's name is a required field.";
+      error.style.display = "block";
+      return;
+    }
     const seasons = document.querySelector("#seasons").value.split(",");
+    for (season of seasons) {
+      if (season === "" || !parseInt(season)) {
+        console.log("validate");
+        error.innerHTML = "Please make sure the seasons are integers.";
+        error.style.display = "block";
+        return;
+      }
+    }
     const ordering = document.querySelector("#ordering").value;
     const image_url = document.querySelector("#image_url").value;
     const data = {
@@ -245,17 +274,16 @@ const handleSaveEdit = () => {
     patchDoctor(selectedDoctor._id, data);
 }
 
-const handleDelete = (event) => {
+const handleDelete = async (event) => {
   if (confirm(`Are you sure you want to delete ${selectedDoctor.name}?`))
   {
-    deleteDoctor(selectedDoctor._id);
+    await deleteDoctor(selectedDoctor._id);
     document.querySelector("#doctor").innerHTML = "";
     getDoctors();
   }
 }
 
 const handleEdit = (event) => {
-  console.log(selectedDoctor);
   document.querySelector("#doctor").innerHTML = `
     <div id="doctor-form">
       <form id="create-doctor">
@@ -267,7 +295,7 @@ const handleEdit = (event) => {
           <label for="ordering">Ordering</label>
           <input
             type="text"
-            id="ordering" 
+            id="ordering"
             value="${selectedDoctor.ordering ? selectedDoctor.ordering : ""}"
           >
           <label for="image_url">Image</label>
