@@ -127,6 +127,31 @@ const createDoctor = async (body) => {
   }
 }
 
+
+const patchDoctor = async (id, body) => {
+  try {
+    const response = await fetch(`http://localhost:8081/doctors/${id}`,  {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    });
+    if (response.ok) {
+        document.querySelector("#error-message").style.display = "none";
+        const data = await response.json();
+        renderDoctor(data);
+        getDoctors();
+
+    } else {
+        document.querySelector("#error-message").style.display = "block";
+        console.log('Bad request', response);
+    };
+  } catch(err) {
+    console.log(err);
+  }
+}
+
 const renderDoctor = (data) => {
   document.querySelector("#doctor").innerHTML = `
     <div id="doctor-detail-heading" >
@@ -134,7 +159,9 @@ const renderDoctor = (data) => {
         ${data.name}
       </h1>
       <div>
-        <button class="btn" id="edit"> Edit </button>
+        <button class="btn" id="edit" onclick="handleEdit(event)">
+          Edit
+        </button>
         <button class="btn" id="delete" onclick="handleDelete(event)">
           Delete
         </button>
@@ -155,7 +182,7 @@ const handleDoctorSelect = (ev) => {
 }
 
 document.querySelector("#create").onclick = () => {
-  console.log("hi");
+  document.querySelector("#companions-list").innerHTML = "";
   document.querySelector("#doctor").innerHTML = `
   <div id="doctor-form">
     <form id="create-doctor">
@@ -186,6 +213,10 @@ const handleCancel = () => {
   document.querySelector("#doctor").innerHTML = "";
 }
 
+const handleCancelEdit = () => {
+  renderDoctor(selectedDoctor);
+}
+
 const handleSaveCreate = () => {
     const name = document.querySelector("#name").value;
     const seasons = document.querySelector("#seasons").value.split(",");
@@ -198,10 +229,21 @@ const handleSaveCreate = () => {
       image_url
     };
     createDoctor(data);
-
 }
 
-
+const handleSaveEdit = () => {
+    const name = document.querySelector("#name").value;
+    const seasons = document.querySelector("#seasons").value.split(",");
+    const ordering = document.querySelector("#ordering").value;
+    const image_url = document.querySelector("#image_url").value;
+    const data = {
+      name,
+      seasons,
+      ordering,
+      image_url
+    };
+    patchDoctor(selectedDoctor._id, data);
+}
 
 const handleDelete = (event) => {
   if (confirm(`Are you sure you want to delete ${selectedDoctor.name}?`))
@@ -210,6 +252,40 @@ const handleDelete = (event) => {
     document.querySelector("#doctor").innerHTML = "";
     getDoctors();
   }
+}
+
+const handleEdit = (event) => {
+  console.log(selectedDoctor);
+  document.querySelector("#doctor").innerHTML = `
+    <div id="doctor-form">
+      <form id="create-doctor">
+        <div class="create-doctor-fields">
+          <label for="name">Name</label>
+          <input type="text" id="name" value="${selectedDoctor.name}" required>
+          <label for="seasons">Seasons</label>
+          <input type="text" id="seasons" value="${selectedDoctor.seasons}" required>
+          <label for="ordering">Ordering</label>
+          <input
+            type="text"
+            id="ordering" 
+            value="${selectedDoctor.ordering ? selectedDoctor.ordering : ""}"
+          >
+          <label for="image_url">Image</label>
+          <input type="text" id="image_url" value="${selectedDoctor.image_url}">
+        </div>
+      </form>
+        <button class="btn btn-main" id="save-create" onclick="handleSaveEdit()">
+          Update
+        </button>
+        <button class="btn" id="cancel" onclick="handleCancelEdit()">
+          Cancel
+        </button>
+        <h3 class="error" id="error-message">
+          Error. Please fix the data.
+        </h3>
+
+    </div>
+  `;
 }
 
 getDoctors();

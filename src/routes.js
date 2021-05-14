@@ -134,6 +134,7 @@ router.route("/doctors/:id")
           }
           res.status(200).send(updatedDoctor);
         } catch(error) {
+          console.log(error);
           res.status(501).send({message: error});
         }
     })
