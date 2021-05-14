@@ -155,33 +155,59 @@ const handleDoctorSelect = (ev) => {
 }
 
 document.querySelector("#create").onclick = () => {
-  document.querySelector("#doctor-form").style.display = "block";
+  console.log("hi");
+  document.querySelector("#doctor").innerHTML = `
+  <div id="doctor-form">
+    <form id="create-doctor">
+      <div class="create-doctor-fields">
+        <label for="name">Name</label>
+        <input type="text" id="name" required>
+        <label for="seasons">Seasons</label>
+        <input type="text" id="seasons" required>
+        <label for="ordering">Ordering</label>
+        <input type="text" id="ordering">
+        <label for="image_url">Image</label>
+        <input type="text" id="image_url">
+      </div>
+    </form>
+      <button class="btn btn-main" id="save-create" onclick="handleSaveCreate()">
+        Save
+      </button>
+      <button class="btn" id="cancel" onclick="handleCancel()">Cancel</button>
+      <h3 class="error" id="error-message">
+        Error. Please fix the data.
+      </h3>
+
+  </div>
+  `;
 }
 
-document.querySelector("#cancel").onclick = () => {
-  document.querySelector("#doctor-form").style.display = "none";
+const handleCancel = () => {
+  document.querySelector("#doctor").innerHTML = "";
 }
 
-document.querySelector("#save-create").onclick = () => {
-  const name = document.querySelector("#name").value;
-  const seasons = document.querySelector("#seasons").value.split(",");
-  const ordering = document.querySelector("#ordering").value;
-  const image_url = document.querySelector("#image_url").value;
-  const data = {
-    name,
-    seasons,
-    ordering,
-    image_url
-  };
-  createDoctor(data);
+const handleSaveCreate = () => {
+    const name = document.querySelector("#name").value;
+    const seasons = document.querySelector("#seasons").value.split(",");
+    const ordering = document.querySelector("#ordering").value;
+    const image_url = document.querySelector("#image_url").value;
+    const data = {
+      name,
+      seasons,
+      ordering,
+      image_url
+    };
+    createDoctor(data);
+
 }
+
+
 
 const handleDelete = (event) => {
-  console.log("hi");
-  console.log(selectedDoctor);
   if (confirm(`Are you sure you want to delete ${selectedDoctor.name}?`))
   {
     deleteDoctor(selectedDoctor._id);
+    document.querySelector("#doctor").innerHTML = "";
     getDoctors();
   }
 }
